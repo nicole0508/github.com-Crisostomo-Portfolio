@@ -1,0 +1,424 @@
+<!-- README (top of file) --------------------------------------------------
+Project: Responsive Personal Portfolio
+Author: [Your Name] — replace where needed
+Tech stack: HTML5, Pure CSS (Flexbox & Grid), Vanilla JS (for mobile nav)
+How to use:
+ 1) Replace placeholder text and images (search for REPLACE or YOUR_NAME).
+ 2) Save this file as `index.html` and open in a browser to preview.
+ 3) To deploy: push to a public GitHub repo and enable GitHub Pages on the `main` branch (or use gh-pages branch).
+
+Requirements satisfied:
+ - Semantic HTML5 elements used
+ - Well-commented + indented
+ - Pure CSS layout using CSS variables, Flexbox and Grid
+ - Media queries for responsiveness
+ - Hamburger menu for mobile
+ - Hero, About, Skills, Projects (3), Contact sections
+ - Accessible: alt attributes, aria labels, focus states
+-------------------------------------------------------------------------->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kaye — Portfolio</title>
+  <meta name="description" content="Portfolio of YOUR_NAME — aspiring web developer. Biography, skills and projects." />
+
+  <!-- Fonts: use system fonts for simplicity; replace or add Google Fonts if you like --->
+  <style>
+    /* -------------------- CSS Variables -------------------- */
+    :root{
+      --bg: #0f1724;            /* deep background */
+      --card: #0b1220;
+      --muted: #94a3b8;
+      --accent: #6ee7b7;        /* mint/green accent */
+      --accent-2: #60a5fa;      /* blue accent */
+      --surface: #0b1220;
+      --glass: rgba(255,255,255,0.03);
+      --radius: 14px;
+      --max-width: 1100px;
+      --gap: 1.25rem;
+      --transition: 200ms ease-in-out;
+    }
+
+    /* -------------------- Base Styles -------------------- */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,var(--bg),#071026 100%);
+      color: #e6eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.5;
+      padding:2rem 1rem;
+      display:flex;
+      justify-content:center;
+    }
+    .container{
+      width:100%;
+      max-width:var(--max-width);
+    }
+
+    a{color:var(--accent); text-decoration:none}
+    a:focus{outline:3px solid rgba(110,231,183,0.15); outline-offset:3px}
+
+    /* -------------------- Header / Nav -------------------- */
+    header{
+      margin-bottom:2rem;
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:var(--gap);
+    }
+    .brand{display:flex; align-items:center; gap:0.75rem}
+    .brand b{font-size:1.05rem}
+    nav ul{display:flex; gap:1rem; list-style:none; margin:0; padding:0}
+    nav a{padding:0.5rem 0.6rem; border-radius:8px; color:var(--muted)}
+    nav a:hover, nav a:focus{color:var(--accent); background:var(--glass)}
+
+    /* hamburger */
+    .menu-toggle{display:none; background:none; border:0; color:var(--muted)}
+    .menu-toggle:focus{outline:3px solid rgba(96,165,250,0.12)}
+
+    /* -------------------- Hero -------------------- */
+    .hero{
+      display:grid; grid-template-columns: 1fr 360px; gap:2rem; align-items:center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      padding:2rem; border-radius:var(--radius); box-shadow:0 8px 30px rgba(2,6,23,0.6);
+    }
+    .hero-left h1{font-size:2rem; margin:0 0 .4rem}
+    .hero-left p{color:var(--muted); margin:0 0 1rem}
+    .cta-row{display:flex; gap:1rem; align-items:center}
+    .btn{display:inline-flex; align-items:center; gap:0.5rem; padding:.6rem .9rem; border-radius:12px; background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#012; font-weight:600; border:0; cursor:pointer}
+    .btn.secondary{background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted)}
+
+    .profile-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent); padding:1rem; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:.85rem}
+    .avatar{width:150px; height:150px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent-2)); display:inline-grid; place-items:center; font-weight:700; color:#012; font-size:1.1rem}
+    .tag{background:rgba(255,255,255,0.02); padding:.35rem .55rem; border-radius:999px; font-size:.85rem; color:var(--muted)}
+
+    /* -------------------- Main layout -------------------- */
+    main{margin-top:1.5rem}
+    section{margin:2.25rem 0}
+    .section-head{display:flex; justify-content:space-between; align-items:center; gap:1rem}
+    .section-title{font-size:1.1rem}
+    .card{background:var(--card); padding:1rem; border-radius:12px; box-shadow:0 6px 24px rgba(2,6,23,0.6)}
+
+    /* -------------------- About -------------------- */
+    .about-grid{display:flex; gap:1.5rem; align-items:center}
+    .about-text{flex:1}
+
+    /* -------------------- Skills -------------------- */
+    .skills{
+      display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:1rem;
+    }
+    .skill{padding:.75rem; border-radius:10px; background:rgba(255,255,255,0.02)}
+    .skill h4{margin:0 0 .5rem}
+    .progress{height:10px; background:rgba(255,255,255,0.03); border-radius:999px; overflow:hidden}
+    .progress > span{display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,var(--accent),var(--accent-2)); transition:width var(--transition)}
+
+    /* -------------------- Projects Gallery -------------------- */
+    .projects-grid{display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:1rem}
+    .project-card{display:flex; flex-direction:column; gap:0.75rem}
+    .project-thumb{height:150px; border-radius:10px; background-size:cover; background-position:center; box-shadow:inset 0 -60px 60px rgba(0,0,0,0.35)}
+    .project-meta{display:flex; justify-content:space-between; align-items:center}
+
+    /* -------------------- Contact -------------------- */
+    .contact-grid{display:grid; grid-template-columns:1fr 320px; gap:1rem}
+    form{display:flex; flex-direction:column; gap:.6rem}
+    input, textarea{background:transparent; border:1px solid rgba(255,255,255,0.06); padding:.6rem .75rem; border-radius:8px; color:inherit}
+    input:focus, textarea:focus{outline:3px solid rgba(96,165,250,0.08)}
+
+    /* -------------------- Footer -------------------- */
+    footer{margin-top:2rem; color:var(--muted); text-align:center}
+
+    /* -------------------- Utilities -------------------- */
+    .muted{color:var(--muted)}
+    .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0}
+
+    /* -------------------- Responsive -------------------- */
+    @media (max-width:980px){
+      .hero{grid-template-columns: 1fr;}
+      .contact-grid{grid-template-columns:1fr}
+      .about-grid{flex-direction:column}
+    }
+    @media (max-width:720px){
+      nav ul{display:none}
+      .menu-toggle{display:inline-flex}
+      .hero{padding:1rem}
+      .profile-card{flex-direction:row; gap:1rem}
+      .avatar{width:96px; height:96px}
+      body{padding:1rem}
+    }
+
+    /* Mobile nav panel (simple slide-down) */
+    .mobile-nav{display:none; background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent); margin-top:.75rem; padding:.75rem; border-radius:8px}
+    .mobile-nav a{display:block; padding:.5rem 0}
+    .mobile-nav.open{display:block}
+
+    /* small screen tweaks for progress animation */\    
+    @media (prefers-reduced-motion: no-preference){
+      .progress > span{transition:width 600ms cubic-bezier(.2,.9,.2,1)}
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header / navigation -->
+    <header class="nav" role="banner">
+      <div class="brand" aria-hidden="false">
+        <div class="avatar" style="width:44px;height:44px;font-size:0.95rem">AY</div>
+        <div>
+          <div style="font-size:.9rem">Nicole Kaye</div>
+          <div class="muted" style="font-size:.78rem">Aspiring Web Developer</div>
+        </div>
+      </div>
+
+      <nav aria-label="Main navigation">
+        <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-nav" id="menuToggle">☰ <span class="sr-only">Toggle navigation</span></button>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Mobile nav (for small screens) -->
+    <div id="mobile-nav" class="mobile-nav" role="navigation" aria-hidden="true">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </div>
+
+    <!-- HERO -->
+    <section id="home" class="hero" aria-labelledby="hero-heading">
+      <div class="hero-left">
+        <h1 id="hero-heading">Hi, I'm <span style="color:var(--accent)">Nicole Kaye</span></h1>
+        <p class="muted">I design and build accessible, responsive websites. Currently learning more advanced front-end patterns and modern deployment workflows.</p>
+        <div class="cta-row">
+          <a class="btn" href="#projects">View My Work</a>
+          <a class="btn secondary" href="#contact">Contact Me</a>
+        </div>
+
+        <!-- Quick summary / highlights -->
+        <div style="margin-top:1rem;display:flex;gap:0.75rem;flex-wrap:wrap">
+          <span class="tag">HTML</span>
+          <span class="tag">CSS (Flex/Grid)</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">Git & GitHub</span>
+        </div>
+      </div>
+
+      <aside class="profile-card" aria-label="Profile card">
+        <img src="main.jpg" alt="Profile photo" class="avatar" style="object-fit:cover;">
+        <div style="text-align:center">
+          <div style="font-weight:700">Nicole Kaye</div>
+          <div class="muted" style="font-size:.9rem">Aspiring Web Developer</div>
+          <div style="margin-top:.6rem"><a href="#about">About me</a></div>
+        </div>
+      </aside>
+    </section>
+
+    <main>
+      <!-- ABOUT -->
+      <section id="about" aria-labelledby="about-heading">
+        <div class="section-head">
+          <h2 id="about-heading" class="section-title">About Me</h2>
+          <div class="muted">Short professional bio</div>
+        </div>
+        <div class="card about-grid" style="margin-top:1rem">
+          <div class="about-text">
+            <p>Hello — I'm <strong>Nicole Kaye</strong>. I'm studying [course] at [school] and passionate about building thoughtful, accessible web interfaces. I enjoy working on projects that combine UI/UX with solid front-end code and deployment — I use Git/GitHub for version control and GitHub Pages for hosting demos.</p>
+            <p class="muted">Replace this paragraph with 3–5 sentences about your background, interests, and what you want to do next.</p>
+
+            <ul>
+              <li>Currently: Learning advanced JavaScript and progressive enhancement.</li>
+              <li>Available for internships & freelance projects.</li>
+            </ul>
+          </div>
+
+          <figure style="min-width:200px;text-align:center">
+            <!-- Replace the placeholder below with your profile photo file path -->
+            <img src="main.jpg" alt="Profile photo of YOUR_NAME" style="width:200px; height:200px; object-fit:cover; border-radius:12px;">
+            <figcaption class="muted" style="font-size:.85rem;margin-top:.5rem">Based in: Dagupan City, Philippines</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- SKILLS -->
+      <section id="skills" aria-labelledby="skills-heading">
+        <div class="section-head">
+          <h2 id="skills-heading" class="section-title">Skills</h2>
+          <div class="muted">Tools & technologies I work with</div>
+        </div>
+
+        <div class="skills" style="margin-top:1rem">
+          <!-- Skill item: change width in inline style to adjust progress -->
+          <div class="skill card">
+            <h4>HTML5</h4>
+            <div class="progress" aria-hidden="true"><span style="width:95%"></span></div>
+            <div class="muted" style="font-size:.85rem;margin-top:.45rem">Semantic HTML, accessibility basics</div>
+          </div>
+
+          <div class="skill card">
+            <h4>CSS (Flexbox & Grid)</h4>
+            <div class="progress" aria-hidden="true"><span style="width:88%"></span></div>
+            <div class="muted" style="font-size:.85rem;margin-top:.45rem">Responsive layouts, variables, media queries</div>
+          </div>
+
+          <div class="skill card">
+            <h4>JavaScript</h4>
+            <div class="progress" aria-hidden="true"><span style="width:70%"></span></div>
+            <div class="muted" style="font-size:.85rem;margin-top:.45rem">DOM, events, small UI behaviors</div>
+          </div>
+
+          <div class="skill card">
+            <h4>Git & GitHub</h4>
+            <div class="progress" aria-hidden="true"><span style="width:85%"></span></div>
+            <div class="muted" style="font-size:.85rem;margin-top:.45rem">Branches, PRs, GitHub Pages</div>
+          </div>
+
+          <div class="skill card">
+            <h4>Design</h4>
+            <div class="progress" aria-hidden="true"><span style="width:62%"></span></div>
+            <div class="muted" style="font-size:.85rem;margin-top:.45rem">Figma basics, visual hierarchy</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section id="projects" aria-labelledby="projects-heading">
+        <div class="section-head">
+          <h2 id="projects-heading" class="section-title">Projects</h2>
+          <div class="muted">A selection of course and personal projects</div>
+        </div>
+
+        <div class="projects-grid" style="margin-top:1rem">
+          <!-- Project 1 -->
+          <article class="project-card card" aria-labelledby="proj1">
+            <div id="proj1" style="font-weight:700">Portfolio Website (this project)</div>
+            <div class="project-thumb" style="background-image:url('https://via.placeholder.com/600x350.png?text=Project+1+Screenshot');" role="img" aria-label="Screenshot of portfolio project"></div>
+            <p class="muted">Single-page responsive portfolio built with semantic HTML and pure CSS. Includes sections for hero, about, skills, projects and contact.</p>
+            <div class="project-meta">
+              <a href="#" aria-label="View code for Portfolio project">View code</a>
+              <a href="#" class="muted">Live demo</a>
+            </div>
+          </article>
+
+          <!-- Project 2 -->
+          <article class="project-card card" aria-labelledby="proj2">
+            <div id="proj2" style="font-weight:700">To-Do App</div>
+            <div class="project-thumb" style="background-image:url('https://via.placeholder.com/600x350.png?text=Project+2+Screenshot');" role="img" aria-label="Screenshot of todo app"></div>
+            <p class="muted">A small JavaScript app to manage tasks (add, remove, persist to localStorage).</p>
+            <div class="project-meta">
+              <a href="#">View code</a>
+              <a href="#" class="muted">Live demo</a>
+            </div>
+          </article>
+
+          <!-- Project 3 -->
+          <article class="project-card card" aria-labelledby="proj3">
+            <div id="proj3" style="font-weight:700">Interactive Quiz</div>
+            <div class="project-thumb" style="background-image:url('https://via.placeholder.com/600x350.png?text=Project+3+Screenshot');" role="img" aria-label="Screenshot of quiz app"></div>
+            <p class="muted">A small quiz built for a web development class, covering DOM manipulation and event handling.</p>
+            <div class="project-meta">
+              <a href="#">View code</a>
+              <a href="#" class="muted">Live demo</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section id="contact" aria-labelledby="contact-heading">
+        <div class="section-head">
+          <h2 id="contact-heading" class="section-title">Contact</h2>
+          <div class="muted">Get in touch — available for internships & freelance</div>
+        </div>
+
+        <div class="card contact-grid" style="margin-top:1rem">
+          <div>
+            <!-- This form is visual only; you can wire it to a service like Formspree -->
+            <form aria-label="Contact form">
+              <label for="name" class="sr-only">Name</label>
+              <input id="name" placeholder="Your name" />
+
+              <label for="email" class="sr-only">Email</label>
+              <input id="email" placeholder="you@example.com" />
+
+              <label for="message" class="sr-only">Message</label>
+              <textarea id="message" placeholder="How can I help?" rows="5"></textarea>
+
+              <div style="display:flex; gap:.6rem; margin-top:.5rem">
+                <button class="btn" type="button">Send message</button>
+                <button class="btn secondary" type="button">Clear</button>
+              </div>
+            </form>
+
+            <div style="margin-top:1rem" class="muted">Or reach me at: <a href="mailto:you@example.com">crisostomo@gmail.com</a></div>
+
+            <div style="margin-top:1rem; display:flex; gap:0.6rem; align-items:center">
+              <a href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">GitHub</a>
+              <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">LinkedIn</a>
+            </div>
+          </div>
+
+          <aside style="padding:1rem; border-radius:10px; background:rgba(255,255,255,0.01);">
+            <h4 style="margin-top:0">Quick info</h4>
+            <p class="muted">Email, socials, and a short note about availability. Replace with your preferred contact channels.</p>
+            <ul class="muted">
+              <li>Location: Dagupan City, Philippines</li>
+              <li>Open to: internships, freelance</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="muted">© <span id="year"></span> YOUR_NAME — Built with semantic HTML & pure CSS. Hosted on GitHub Pages.</div>
+    </footer>
+  </div>
+
+  <!-- Small JS for mobile nav and dynamic year -->
+  <script>
+    // Toggle mobile nav
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileNav = document.getElementById('mobile-nav');
+    menuToggle?.addEventListener('click', ()=>{
+      const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+      menuToggle.setAttribute('aria-expanded', String(!expanded));
+      mobileNav.classList.toggle('open');
+      mobileNav.setAttribute('aria-hidden', String(expanded));
+    });
+
+    // Set copyright year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Small enhancement: animate progress bars when they enter the viewport
+    const observer = new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          const el = entry.target;
+          const span = el.querySelector('.progress > span');
+          if(span && !span.dataset.animated){
+            // already defined width inline; re-apply to trigger transition
+            const width = span.style.width || '70%';
+            span.style.width = '0%';
+            requestAnimationFrame(()=>{ span.style.width = width; span.dataset.animated = true });
+          }
+        }
+      })
+    },{threshold:0.2});
+    document.querySelectorAll('.skill').forEach(s=>observer.observe(s));
+  </script>
+</body>
+</html>
